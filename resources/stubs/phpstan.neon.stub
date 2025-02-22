@@ -1,0 +1,21 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+    treatPhpDocTypesAsCertain: false
+
+    # Level 10 is the highest level
+    level: max
+
+    paths:
+        - app
+        - config
+        - bootstrap
+        - database/factories
+        - routes
+
+    
+    excludePaths:
+        - app/Nova
+        - nova-components
