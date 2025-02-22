@@ -9,7 +9,7 @@
 </p>
 
 ------
-This package provides a wonderful **PHP Skeleton** to start building your next package idea.
+A Laravel package to set up new projects with Nuno Maduro's recommended tools and configurations, including Pest, Pint, and more.
 
 > **Requires [PHP 8.3+](https://php.net/releases/)**
 

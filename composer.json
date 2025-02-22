@@ -1,12 +1,16 @@
 {
-    "name": "nunomaduro/skeleton-php",
-    "description": "A skeleton repository for my packages",
-    "keywords": ["php", "skeleton", "package"],
+    "name": "nunophp/style",
+    "description": "A Laravel package to automate Nuno Maduro's recommended development workflow.",
+    "keywords": [
+        "php",
+        "skeleton",
+        "package"
+    ],
     "license": "MIT",
     "authors": [
         {
-            "name": "Nuno Maduro",
-            "email": "enunomaduro@gmail.com"
+            "name": "Micheal Ataklt",
+            "email": "matakltm.code@gmail.com"
         }
     ],
     "require": {
@@ -23,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "NunoMaduro\\SkeletonPhp\\": "src/"
+            "Nunophp\\Style\\": "src/"
         }
     },
     "autoload-dev": {
