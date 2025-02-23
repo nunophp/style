@@ -40,6 +40,7 @@ class SetupStyleCommand extends Command
         $composer = json_decode(File::get($composerPath), true);
 
         $newScripts = [
+            'refacto' => 'rector',
             'lint' => 'pint',
             'test:lint' => 'pint --test',
             'test:types' => 'phpstan analyse  --ansi --memory-limit=2G',
@@ -47,6 +48,7 @@ class SetupStyleCommand extends Command
             'test:type-coverage' => 'pest --type-coverage --min=100.0 --memory-limit=2G',
             'test:unit' => 'pest --colors=always --coverage --parallel --min=100.0',
             'test' => [
+                "@test:refacto",
                 '@test:lint',
                 '@test:types',
                 '@test:arch',
