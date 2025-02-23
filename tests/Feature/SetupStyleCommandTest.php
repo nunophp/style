@@ -1,6 +1,5 @@
 <?php
 
-
 it('runs the style:setup command successfully', function () {
     $this->artisan('style:setup')
         ->expectsConfirmation('Do you want to install required development tools? (Pest, Pint, PHPStan, Rector)', 'no')
