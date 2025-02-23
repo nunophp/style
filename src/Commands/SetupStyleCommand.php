@@ -15,37 +15,49 @@ class SetupStyleCommand extends Command
     {
         $this->info('Starting Nuno Style setup...');
 
-        // Step 1: Install dependencies
         if ($this->confirm('Do you want to install required development tools? (Pest, Pint, PHPStan, Rector)')) {
-            $this->info('Installing dependencies...');
-            exec('composer require --dev pestphp/pest pestphp/pest-plugin-laravel pestphp/pest-plugin-type-coverage laravel/pint phpstan/phpstan rector/rector');
+            $this->installDependencies();
         }
 
-        // Step 2: Update composer.json
         $this->updateComposerJson();
 
-        // Step 3: Update AppServiceProvider
         if ($this->confirm('Do you want to update AppServiceProvider with recommended configurations? This will replace your existing file.')) {
             $this->updateAppServiceProvider();
         }
 
-        // Step 4: Publish configuration files
         $this->publishConfigs();
 
         $this->info('Nuno Style setup complete! Run "composer test" to verify.');
     }
 
+    protected function installDependencies(): void
+    {
+        $this->info('Installing dependencies...');
+        $this->executeCommand('composer require --dev pestphp/pest pestphp/pest-plugin-laravel pestphp/pest-plugin-type-coverage laravel/pint phpstan/phpstan rector/rector');
+    }
+
+    protected function executeCommand(string $command): void
+    {
+        exec($command);
+    }
+
     protected function updateComposerJson(): void
     {
         $composerPath = base_path('composer.json');
-        $composer = json_decode(File::get($composerPath), true, 512, JSON_THROW_ON_ERROR);
+        $composer = $this->decodeJson(File::get($composerPath));
+
+        if (! is_array($composer)) {
+            $this->error('composer.json is not a valid array');
+
+            return;
+        }
 
         $newScripts = [
             'refacto' => 'rector',
             'lint' => 'pint',
             'test:refacto' => 'rector --dry-run',
             'test:lint' => 'pint --test',
-            'test:types' => 'phpstan analyse  --ansi --memory-limit=2G',
+            'test:types' => 'phpstan analyse --ansi --memory-limit=2G',
             'test:arch' => 'pest --filter=arch',
             'test:type-coverage' => 'pest --type-coverage --min=100.0 --memory-limit=2G',
             'test:unit' => 'pest --colors=always --coverage --parallel --min=100.0',
@@ -60,18 +72,32 @@ class SetupStyleCommand extends Command
         ];
 
         $composer['scripts'] = array_merge($composer['scripts'] ?? [], $newScripts);
-        $encoded = json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $encoded = $this->encodeJson($composer);
         if ($encoded === false) {
             $this->error('Failed to encode composer.json');
+
             return;
         }
         File::put($composerPath, $encoded);
         $this->info('Updated composer.json with testing scripts.');
     }
 
+    protected function decodeJson(string $json): mixed
+    {
+        return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    protected function encodeJson(array $data): string|false
+    {
+        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
+
     protected function updateAppServiceProvider(): void
     {
-        $stub = File::get(__DIR__ . '/../../resources/stubs/AppServiceProvider.php.stub');
+        $stub = File::get(__DIR__.'/../../resources/stubs/AppServiceProvider.php.stub');
         File::put(app_path('Providers/AppServiceProvider.php'), $stub);
         $this->info('Updated AppServiceProvider with recommended configurations.');
     }
@@ -79,9 +105,9 @@ class SetupStyleCommand extends Command
     protected function publishConfigs(): void
     {
         $files = [
-            'pint.json' => File::get(__DIR__ . '/../../resources/stubs/pint.json.stub'),
-            'phpstan.neon' => File::get(__DIR__ . '/../../resources/stubs/phpstan.neon.stub'),
-            'rector.php' => File::get(__DIR__ . '/../../resources/stubs/rector.php.stub'),
+            'pint.json' => File::get(__DIR__.'/../../resources/stubs/pint.json.stub'),
+            'phpstan.neon' => File::get(__DIR__.'/../../resources/stubs/phpstan.neon.stub'),
+            'rector.php' => File::get(__DIR__.'/../../resources/stubs/rector.php.stub'),
         ];
 
         foreach ($files as $file => $content) {
