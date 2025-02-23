@@ -1,5 +1,6 @@
 {
     "name": "nunophp/style",
+    "version": "v1.0.0",
     "description": "A Laravel package to set up new projects with Nuno Maduro's recommended tools and configurations.",
     "keywords": [
         "php",
