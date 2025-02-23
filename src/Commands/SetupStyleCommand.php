@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\File;
 class SetupStyleCommand extends Command
 {
     protected $signature = 'style:setup';
+
     protected $description = 'Sets up a new Laravel project with Nuno Maduro\'s recommended style';
 
-    public function handle()
+    public function handle(): void
     {
         $this->info('Starting Nuno Style setup...');
 
@@ -42,13 +43,14 @@ class SetupStyleCommand extends Command
         $newScripts = [
             'refacto' => 'rector',
             'lint' => 'pint',
+            'test:refacto' => 'rector --dry-run',
             'test:lint' => 'pint --test',
             'test:types' => 'phpstan analyse  --ansi --memory-limit=2G',
             'test:arch' => 'pest --filter=arch',
             'test:type-coverage' => 'pest --type-coverage --min=100.0 --memory-limit=2G',
             'test:unit' => 'pest --colors=always --coverage --parallel --min=100.0',
             'test' => [
-                "@test:refacto",
+                '@test:refacto',
                 '@test:lint',
                 '@test:types',
                 '@test:arch',
@@ -64,7 +66,7 @@ class SetupStyleCommand extends Command
 
     protected function updateAppServiceProvider()
     {
-        $stub = File::get(__DIR__ . '/../../resources/stubs/AppServiceProvider.php.stub');
+        $stub = File::get(__DIR__.'/../../resources/stubs/AppServiceProvider.php.stub');
         File::put(app_path('Providers/AppServiceProvider.php'), $stub);
         $this->info('Updated AppServiceProvider with recommended configurations.');
     }
@@ -72,14 +74,14 @@ class SetupStyleCommand extends Command
     protected function publishConfigs()
     {
         $files = [
-            'pint.json' => File::get(__DIR__ . '/../../resources/stubs/pint.json.stub'),
-            'phpstan.neon' => File::get(__DIR__ . '/../../resources/stubs/phpstan.neon.stub'),
-            'rector.php' => File::get(__DIR__ . '/../../resources/stubs/rector.php.stub'),
+            'pint.json' => File::get(__DIR__.'/../../resources/stubs/pint.json.stub'),
+            'phpstan.neon' => File::get(__DIR__.'/../../resources/stubs/phpstan.neon.stub'),
+            'rector.php' => File::get(__DIR__.'/../../resources/stubs/rector.php.stub'),
         ];
 
         foreach ($files as $file => $content) {
             $path = base_path($file);
-            if (File::exists($path) && !$this->confirm("File $file already exists. Overwrite?")) {
+            if (File::exists($path) && ! $this->confirm("File $file already exists. Overwrite?")) {
                 continue;
             }
             File::put($path, $content);
