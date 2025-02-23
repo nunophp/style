@@ -1,6 +1,6 @@
 <?php
 
-it('runs the style:setup command successfully', function () {
+it('runs the style:setup command successfully', function (): void {
     $this->artisan('style:setup')
         ->expectsConfirmation('Do you want to install required development tools? (Pest, Pint, PHPStan, Rector)', 'no')
         ->expectsConfirmation('Do you want to update AppServiceProvider with recommended configurations? This will replace your existing file.', 'no')

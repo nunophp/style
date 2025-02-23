@@ -7,6 +7,9 @@ use Nunophp\Style\Commands\SetupStyleCommand;
 
 class StyleServiceProvider extends ServiceProvider
 {
+    /**
+     * @var array<class-string>
+     */
     protected $commands = [
         SetupStyleCommand::class,
     ];
@@ -17,9 +20,9 @@ class StyleServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../resources/stubs/pint.json.stub' => base_path('pint.json'),
-                __DIR__.'/../resources/stubs/phpstan.neon.stub' => base_path('phpstan.neon'),
-                __DIR__.'/../resources/stubs/rector.php.stub' => base_path('rector.php'),
+                __DIR__ . '/../resources/stubs/pint.json.stub' => base_path('pint.json'),
+                __DIR__ . '/../resources/stubs/phpstan.neon.stub' => base_path('phpstan.neon'),
+                __DIR__ . '/../resources/stubs/rector.php.stub' => base_path('rector.php'),
             ], 'nunophp-style-configs');
         }
     }
