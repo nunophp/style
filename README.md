@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/nunomaduro/skeleton-php/master/docs/example.png" height="300" alt="Skeleton Php">
+    <img src="https://github.com/user-attachments/assets/0f373666-c7b5-43c6-a4ea-6308080d3a8d" alt="Skeleton Php">
     <p align="center">
         <a href="https://github.com/nunophp/style/actions"><img alt="GitHub Workflow Status (master)" src="https://github.com/nunophp/style/actions/workflows/tests.yml/badge.svg"></a>
         <a href="https://packagist.org/packages/nunophp/style"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/nunophp/style"></a>
