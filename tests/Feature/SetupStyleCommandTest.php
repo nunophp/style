@@ -34,9 +34,25 @@ it('runs the style:setup command successfully with all options declined', functi
         ->expectsConfirmation('File pint.json already exists. Overwrite?', 'no')
         ->expectsConfirmation('File phpstan.neon already exists. Overwrite?', 'no')
         ->expectsConfirmation('File rector.php already exists. Overwrite?', 'no')
-        ->expectsOutput('Starting Nuno Style setup...')
-        ->expectsOutput('Updated composer.json with testing scripts.')
-        ->expectsOutput('Nuno Style setup complete! Run "composer test" to verify.')
+        ->expectsOutput('') // Empty line before header
+        ->expectsOutput('╔════════════════════════════════════╗')
+        ->expectsOutput('║      Starting Nuno Style Setup     ║')
+        ->expectsOutput('╚════════════════════════════════════╝')
+        ->expectsOutput('') // Empty line after header
+        ->expectsOutput('') // Empty line before updateComposerJson
+        ->expectsOutput(' 📝 Updating composer.json...')
+        ->expectsOutput(' ✓ composer.json updated with testing scripts.')
+        ->expectsOutput('') // Empty line before publishConfigs
+        ->expectsOutput(' 📦 Publishing configuration files...')
+        ->expectsOutput(' ↳ Skipped pint.json (not overwritten).')
+        ->expectsOutput(' ↳ Skipped phpstan.neon (not overwritten).')
+        ->expectsOutput(' ↳ Skipped rector.php (not overwritten).')
+        ->expectsOutput('') // Empty line before footer
+        ->expectsOutput('╔════════════════════════════════════╗')
+        ->expectsOutput('║    Nuno Style Setup Complete       ║')
+        ->expectsOutput('╚════════════════════════════════════╝')
+        ->expectsOutput(' 🎉 Run "composer test" to verify your setup!')
+        ->expectsOutput('') // Empty line after footer
         ->assertExitCode(0);
 });
 
@@ -65,9 +81,24 @@ it('skips overwriting existing config files', function (): void {
         ->expectsConfirmation('File pint.json already exists. Overwrite?', 'no')
         ->expectsConfirmation('File phpstan.neon already exists. Overwrite?', 'yes')
         ->expectsConfirmation('File rector.php already exists. Overwrite?', 'no')
-        ->expectsOutput('Starting Nuno Style setup...')
-        ->expectsOutput('Updated composer.json with testing scripts.')
-        ->expectsOutput('Published phpstan.neon.')
-        ->expectsOutput('Nuno Style setup complete! Run "composer test" to verify.')
+        ->expectsOutput('') // Empty line before header
+        ->expectsOutput('╔════════════════════════════════════╗')
+        ->expectsOutput('║      Starting Nuno Style Setup     ║')
+        ->expectsOutput('╚════════════════════════════════════╝')
+        ->expectsOutput('') // Empty line after header
+        ->expectsOutput('') // Empty line before updateComposerJson
+        ->expectsOutput(' 📝 Updating composer.json...')
+        ->expectsOutput(' ✓ composer.json updated with testing scripts.')
+        ->expectsOutput('') // Empty line before publishConfigs
+        ->expectsOutput(' 📦 Publishing configuration files...')
+        ->expectsOutput(' ↳ Skipped pint.json (not overwritten).')
+        ->expectsOutput(' ✓ Published phpstan.neon.')
+        ->expectsOutput(' ↳ Skipped rector.php (not overwritten).')
+        ->expectsOutput('') // Empty line before footer
+        ->expectsOutput('╔════════════════════════════════════╗')
+        ->expectsOutput('║    Nuno Style Setup Complete       ║')
+        ->expectsOutput('╚════════════════════════════════════╝')
+        ->expectsOutput(' 🎉 Run "composer test" to verify your setup!')
+        ->expectsOutput('') // Empty line after footer
         ->assertExitCode(0);
 });

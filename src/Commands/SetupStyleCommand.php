@@ -13,27 +13,29 @@ class SetupStyleCommand extends Command
 
     public function handle(): void
     {
-        $this->info('Starting Nuno Style setup...');
+        $this->displayHeader();
 
-        if ($this->confirm('Do you want to install required development tools? (Pest, Pint, PHPStan, Rector)')) {
+        if ($this->confirm('Do you want to install required development tools? (Pest, Pint, PHPStan, Rector)', true)) {
             $this->installDependencies();
         }
 
         $this->updateComposerJson();
 
-        if ($this->confirm('Do you want to update AppServiceProvider with recommended configurations? This will replace your existing file.')) {
+        if ($this->confirm('Do you want to update AppServiceProvider with recommended configurations? This will replace your existing file.', true)) {
             $this->updateAppServiceProvider();
         }
 
         $this->publishConfigs();
 
-        $this->info('Nuno Style setup complete! Run "composer test" to verify.');
+        $this->displayFooter();
     }
 
     protected function installDependencies(): void
     {
-        $this->info('Installing dependencies...');
+        $this->line('');
+        $this->comment(' 🚀 Installing Development Tools...');
         $this->executeCommand('composer require --dev pestphp/pest pestphp/pest-plugin-laravel pestphp/pest-plugin-type-coverage laravel/pint phpstan/phpstan rector/rector');
+        $this->info(' ✓ Development tools installed successfully.');
     }
 
     protected function executeCommand(string $command): void
@@ -44,10 +46,12 @@ class SetupStyleCommand extends Command
     protected function updateComposerJson(): void
     {
         $composerPath = base_path('composer.json');
+        $this->line('');
+        $this->comment(' 📝 Updating composer.json...');
         $composer = $this->decodeJson(File::get($composerPath));
 
         if (! is_array($composer)) {
-            $this->error('composer.json is not a valid array');
+            $this->error(' ✗ Error: composer.json is not a valid array.');
 
             return;
         }
@@ -74,12 +78,12 @@ class SetupStyleCommand extends Command
         $composer['scripts'] = array_merge($composer['scripts'] ?? [], $newScripts);
         $encoded = $this->encodeJson($composer);
         if ($encoded === false) {
-            $this->error('Failed to encode composer.json');
+            $this->error(' ✗ Error: Failed to encode composer.json.');
 
             return;
         }
         File::put($composerPath, $encoded);
-        $this->info('Updated composer.json with testing scripts.');
+        $this->info(' ✓ composer.json updated with testing scripts.');
     }
 
     protected function decodeJson(string $json): mixed
@@ -97,13 +101,18 @@ class SetupStyleCommand extends Command
 
     protected function updateAppServiceProvider(): void
     {
+        $this->line('');
+        $this->comment(' ⚙️ Updating AppServiceProvider...');
         $stub = File::get(__DIR__.'/../../resources/stubs/AppServiceProvider.php.stub');
         File::put(app_path('Providers/AppServiceProvider.php'), $stub);
-        $this->info('Updated AppServiceProvider with recommended configurations.');
+        $this->info(' ✓ AppServiceProvider updated with recommended configurations.');
     }
 
     protected function publishConfigs(): void
     {
+        $this->line('');
+        $this->comment(' 📦 Publishing configuration files...');
+
         $files = [
             'pint.json' => File::get(__DIR__.'/../../resources/stubs/pint.json.stub'),
             'phpstan.neon' => File::get(__DIR__.'/../../resources/stubs/phpstan.neon.stub'),
@@ -112,11 +121,34 @@ class SetupStyleCommand extends Command
 
         foreach ($files as $file => $content) {
             $path = base_path($file);
-            if (File::exists($path) && ! $this->confirm("File $file already exists. Overwrite?")) {
+            if (File::exists($path) && ! $this->confirm("File $file already exists. Overwrite?", true)) {
+                $this->warn(" ↳ Skipped $file (not overwritten).");
+
                 continue;
             }
             File::put($path, $content);
-            $this->info("Published $file.");
+            $this->info(" ✓ Published $file.");
         }
+    }
+
+    protected function displayHeader(): void
+    {
+        $this->line('');
+        // $this->info('║ ' . str_pad($title, 34, ' ', STR_PAD_BOTH) . ' ║');
+        $this->info('╔════════════════════════════════════╗');
+        $this->info('║      Starting Nuno Style Setup     ║');
+        $this->info('╚════════════════════════════════════╝');
+        $this->line('');
+    }
+
+    protected function displayFooter(): void
+    {
+        $this->line('');
+        // $this->info('║ ' . str_pad($message, 34, ' ', STR_PAD_BOTH) . ' ║');
+        $this->info('╔════════════════════════════════════╗');
+        $this->info('║    Nuno Style Setup Complete       ║');
+        $this->info('╚════════════════════════════════════╝');
+        $this->comment(' 🎉 Run "composer test" to verify your setup!');
+        $this->line('');
     }
 }
